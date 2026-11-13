@@ -1,0 +1,8 @@
+/dist/
+/data/
+/nano_ctl
+/coverage.out
+*.db
+*.db-shm
+*.db-wal
+DebugLog.txt

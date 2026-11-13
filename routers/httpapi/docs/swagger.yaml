@@ -1,0 +1,1923 @@
+basePath: /api/v1
+definitions:
+  httpapi.apiError:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+      sdk_code:
+        type: integer
+    type: object
+  httpapi.axesReadBody:
+    properties:
+      axes:
+        items:
+          type: integer
+        type: array
+      fields_mask:
+        type: integer
+    type: object
+  httpapi.axisCommandBody:
+    properties:
+      acceleration:
+        type: number
+      action:
+        type: string
+      deceleration:
+        type: number
+      direction:
+        type: integer
+      equivalence:
+        type: number
+      home_method:
+        type: integer
+      offset:
+        type: number
+      position:
+        type: number
+      position_mode:
+        type: integer
+      probe_function:
+        type: integer
+      secondary_speed:
+        type: number
+      speed:
+        type: number
+      stop_mode:
+        type: integer
+      unit:
+        type: string
+    type: object
+  httpapi.busCommandBody:
+    properties:
+      action:
+        type: string
+      port_num:
+        type: integer
+    type: object
+  httpapi.busConfigBody:
+    properties:
+      cycle_time_micros:
+        type: integer
+      name:
+        type: string
+    type: object
+  httpapi.envelope:
+    properties:
+      data: {}
+      error:
+        $ref: '#/definitions/httpapi.apiError'
+    type: object
+  httpapi.extraEncoderCommandBody:
+    properties:
+      action:
+        type: string
+      input_mode:
+        type: integer
+      multiplier:
+        type: integer
+      position:
+        type: integer
+    type: object
+  httpapi.hcmpCommandBody:
+    properties:
+      action:
+        type: string
+      axis:
+        type: integer
+      count:
+        type: integer
+      increment:
+        type: integer
+      logic:
+        type: integer
+      mode:
+        type: integer
+      position:
+        type: integer
+      source:
+        type: integer
+      time:
+        type: integer
+    type: object
+  httpapi.ioReadBody:
+    properties:
+      addresses:
+        items:
+          type: integer
+        type: array
+    type: object
+  httpapi.ioVariableMetadataBody:
+    properties:
+      alias:
+        type: string
+      disabled:
+        type: boolean
+      remarks:
+        type: string
+      reverse:
+        type: boolean
+    type: object
+  httpapi.ioVariableWriteBody:
+    properties:
+      "on":
+        type: boolean
+      raw_value:
+        type: integer
+      reverse_time_millis:
+        type: integer
+    type: object
+  httpapi.ioWatchBody:
+    properties:
+      addresses:
+        items:
+          type: integer
+        type: array
+      interval_micros:
+        type: integer
+      kind:
+        type: string
+    type: object
+  httpapi.ioWriteBody:
+    properties:
+      analog_value:
+        type: number
+      "on":
+        type: boolean
+      raw_value:
+        type: integer
+      reverse_time_millis:
+        type: integer
+    type: object
+  httpapi.odWriteBody:
+    properties:
+      value:
+        type: integer
+      value_length:
+        type: integer
+    type: object
+  httpapi.pdoWriteBody:
+    properties:
+      data_length:
+        type: integer
+      value:
+        type: integer
+    type: object
+  store.AxisConfig:
+    properties:
+      axis:
+        type: integer
+      card_no:
+        type: integer
+      created_at:
+        type: integer
+      err_band:
+        type: integer
+      hold_time:
+        type: integer
+      id:
+        type: integer
+      move_lock:
+        type: integer
+      reduction_ratio:
+        type: integer
+      resolution:
+        type: integer
+      updated_at:
+        type: integer
+    type: object
+info:
+  contact: {}
+  description: REST API for monitoring and controlling Leadshine motion cards.
+  title: nano_ctl REST API
+  version: "1.0"
+paths:
+  /axis-configs:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 列出轴配置
+      tags:
+      - axis-configs
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 轴配置
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/store.AxisConfig'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 新建轴配置
+      tags:
+      - axis-configs
+  /axis-configs/{card}/{axis}:
+    delete:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 轴编号
+        in: path
+        name: axis
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 删除轴配置
+      tags:
+      - axis-configs
+    get:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 轴编号
+        in: path
+        name: axis
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 读取轴配置
+      tags:
+      - axis-configs
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 轴编号
+        in: path
+        name: axis
+        required: true
+        type: integer
+      - description: 轴配置
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/store.AxisConfig'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 新建或更新轴配置
+      tags:
+      - axis-configs
+  /bus-configs:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 列出总线配置
+      tags:
+      - bus-configs
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 总线配置名称和周期
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/httpapi.busConfigBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 新建总线配置元数据
+      tags:
+      - bus-configs
+  /bus-configs/{id}:
+    delete:
+      parameters:
+      - description: 总线配置 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 删除总线配置及其本地文件
+      tags:
+      - bus-configs
+    get:
+      parameters:
+      - description: 总线配置 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 读取总线配置
+      tags:
+      - bus-configs
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 总线配置 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 总线配置名称和周期
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/httpapi.busConfigBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 更新总线配置元数据
+      tags:
+      - bus-configs
+  /bus-configs/{id}/files/{kind}:
+    get:
+      parameters:
+      - description: 总线配置 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 文件类型
+        enum:
+        - eni
+        - ini
+        in: path
+        name: kind
+        required: true
+        type: string
+      produces:
+      - application/octet-stream
+      - ' application/xml'
+      - ' text/plain'
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 下载总线配置文件
+      tags:
+      - bus-configs
+    put:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: 总线配置 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 文件类型
+        enum:
+        - eni
+        - ini
+        in: path
+        name: kind
+        required: true
+        type: string
+      - description: 要上传的 ENI 或 INI 文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 上传总线配置文件
+      tags:
+      - bus-configs
+  /cards:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 列出已打开的控制卡
+      tags:
+      - cards
+  /cards/{card}:
+    get:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 读取控制卡信息
+      tags:
+      - cards
+  /cards/{card}/axes:
+    get:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 逗号分隔的轴编号，最多 64 个
+        in: query
+        name: axes
+        required: true
+        type: string
+      - description: 状态字段掩码
+        in: query
+        name: fields_mask
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 批量读取轴状态
+      tags:
+      - axes
+  /cards/{card}/axes/{axis}:
+    get:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 轴编号
+        in: path
+        name: axis
+        required: true
+        type: integer
+      - description: 状态字段掩码
+        in: query
+        name: fields_mask
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 读取单轴状态
+      tags:
+      - axes
+  /cards/{card}/axes/{axis}/commands:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 轴编号
+        in: path
+        name: axis
+        required: true
+        type: integer
+      - description: 轴动作与动作参数
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/httpapi.axisCommandBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 执行轴命令
+      tags:
+      - axes
+  /cards/{card}/axes/{axis}/equivalence:
+    get:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 轴编号
+        in: path
+        name: axis
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 读取轴当量
+      tags:
+      - axes
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 轴编号
+        in: path
+        name: axis
+        required: true
+        type: integer
+      - description: 轴当量
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            format: float64
+            type: number
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 设置轴当量
+      tags:
+      - axes
+  /cards/{card}/axes/read-batch:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 轴编号列表与状态字段掩码
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/httpapi.axesReadBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 通过请求体批量读取轴状态
+      tags:
+      - axes
+  /cards/{card}/axis-stream:
+    get:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 逗号分隔的轴编号，最多 64 个
+        in: query
+        name: axes
+        required: true
+        type: string
+      - description: 状态字段掩码
+        in: query
+        name: fields_mask
+        type: integer
+      - description: 采样间隔（微秒），范围 1000 到 1000000
+        in: query
+        name: interval_micros
+        type: integer
+      produces:
+      - text/event-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 通过 Server-Sent Events 订阅轴状态
+      tags:
+      - axes
+  /cards/{card}/bus:
+    get:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 总线端口编号，默认 2
+        in: query
+        name: port_num
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 读取 EtherCAT 总线状态
+      tags:
+      - bus
+  /cards/{card}/bus-configs/{id}/apply:
+    post:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 总线配置 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 应用总线配置到控制卡
+      tags:
+      - bus-configs
+  /cards/{card}/bus/commands:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: stop 或 clear_error 命令
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/httpapi.busCommandBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 执行 EtherCAT 总线命令
+      tags:
+      - bus
+  /cards/{card}/bus/od/{node}/{index}/{sub_index}:
+    get:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 从站节点
+        in: path
+        name: node
+        required: true
+        type: integer
+      - description: 对象索引
+        in: path
+        name: index
+        required: true
+        type: integer
+      - description: 子索引
+        in: path
+        name: sub_index
+        required: true
+        type: integer
+      - description: 总线端口编号，默认 2
+        in: query
+        name: port_num
+        type: integer
+      - description: 读取字节数，默认 4
+        in: query
+        name: value_length
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 读取 EtherCAT 对象字典
+      tags:
+      - bus
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 从站节点
+        in: path
+        name: node
+        required: true
+        type: integer
+      - description: 对象索引
+        in: path
+        name: index
+        required: true
+        type: integer
+      - description: 子索引
+        in: path
+        name: sub_index
+        required: true
+        type: integer
+      - description: 总线端口编号，默认 2
+        in: query
+        name: port_num
+        type: integer
+      - description: 写入字节数，默认 4
+        in: query
+        name: value_length
+        type: integer
+      - description: 对象值
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/httpapi.odWriteBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 写入 EtherCAT 对象字典
+      tags:
+      - bus
+  /cards/{card}/bus/pdo/rx/{address}:
+    get:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: PDO 地址
+        in: path
+        name: address
+        required: true
+        type: integer
+      - description: 总线端口编号，默认 2
+        in: query
+        name: port_num
+        type: integer
+      - description: 数据长度，默认 4
+        in: query
+        name: data_length
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 读取 EtherCAT RxPDO 映射值
+      tags:
+      - bus
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: PDO 地址
+        in: path
+        name: address
+        required: true
+        type: integer
+      - description: 总线端口编号，默认 2
+        in: query
+        name: port_num
+        type: integer
+      - description: 数据长度，默认 4
+        in: query
+        name: data_length
+        type: integer
+      - description: PDO 值
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/httpapi.pdoWriteBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 写入 EtherCAT RxPDO 映射值
+      tags:
+      - bus
+  /cards/{card}/bus/pdo/tx/{address}:
+    get:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: PDO 地址
+        in: path
+        name: address
+        required: true
+        type: integer
+      - description: 总线端口编号，默认 2
+        in: query
+        name: port_num
+        type: integer
+      - description: 数据长度，默认 4
+        in: query
+        name: data_length
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 读取 EtherCAT TxPDO 映射值
+      tags:
+      - bus
+  /cards/{card}/cycle-time:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 总线端口与周期
+        in: body
+        name: body
+        required: true
+        schema:
+          additionalProperties:
+            format: int32
+            type: integer
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 设置 EtherCAT 周期
+      tags:
+      - cards
+  /cards/{card}/extra-encoders/{channel}:
+    get:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 编码器通道
+        in: path
+        name: channel
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 读取外接编码器状态
+      tags:
+      - extra-encoders
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 编码器通道
+        in: path
+        name: channel
+        required: true
+        type: integer
+      - description: 编码器命令参数
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/httpapi.extraEncoderCommandBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 配置外接编码器或设置位置
+      tags:
+      - extra-encoders
+  /cards/{card}/hcmp/{channel}:
+    get:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 比较器通道
+        in: path
+        name: channel
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 读取高速比较器状态
+      tags:
+      - hcmp
+  /cards/{card}/hcmp/{channel}/commands:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 比较器通道
+        in: path
+        name: channel
+        required: true
+        type: integer
+      - description: 比较器命令参数
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/httpapi.hcmpCommandBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 配置高速比较器
+      tags:
+      - hcmp
+  /cards/{card}/io-arrays/{direction}/{port}:
+    get:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 方向
+        enum:
+        - input
+        - output
+        in: path
+        name: direction
+        required: true
+        type: string
+      - description: 端口编号
+        in: path
+        name: port
+        required: true
+        type: integer
+      - description: 读取长度，范围 1 到 4096
+        in: query
+        name: length
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 读取连续 IO 数组
+      tags:
+      - io
+  /cards/{card}/io-info:
+    get:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 读取本地与 EtherCAT IO 数量
+      tags:
+      - cards
+  /cards/{card}/io-stream:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: IO 类型；POST 时放在请求体中
+        enum:
+        - input-bit
+        - output-bit
+        - input-port
+        - output-port
+        - analog-input
+        - analog-output
+        in: query
+        name: kind
+        type: string
+      - description: GET 使用逗号分隔的地址列表
+        in: query
+        name: addresses
+        type: string
+      - description: GET 采样间隔（微秒），范围 1000 到 1000000
+        in: query
+        name: interval_micros
+        type: integer
+      - description: POST 使用的 IO 类型、地址列表和采样间隔
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/httpapi.ioWatchBody'
+      produces:
+      - text/event-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 通过 Server-Sent Events 订阅 IO 物理值
+      tags:
+      - io
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: IO 类型；POST 时放在请求体中
+        enum:
+        - input-bit
+        - output-bit
+        - input-port
+        - output-port
+        - analog-input
+        - analog-output
+        in: query
+        name: kind
+        type: string
+      - description: GET 使用逗号分隔的地址列表
+        in: query
+        name: addresses
+        type: string
+      - description: GET 采样间隔（微秒），范围 1000 到 1000000
+        in: query
+        name: interval_micros
+        type: integer
+      - description: POST 使用的 IO 类型、地址列表和采样间隔
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/httpapi.ioWatchBody'
+      produces:
+      - text/event-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 通过 Server-Sent Events 订阅 IO 物理值
+      tags:
+      - io
+  /cards/{card}/io/{kind}:
+    get:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: IO 类型
+        enum:
+        - input-bit
+        - output-bit
+        - input-port
+        - output-port
+        - analog-input
+        - analog-output
+        in: path
+        name: kind
+        required: true
+        type: string
+      - description: 逗号分隔的地址，最多 4096 个
+        in: query
+        name: addresses
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 按地址读取 IO 物理值
+      tags:
+      - io
+  /cards/{card}/io/{kind}/{address}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: IO 类型
+        enum:
+        - input-bit
+        - output-bit
+        - input-port
+        - output-port
+        - analog-input
+        - analog-output
+        in: path
+        name: kind
+        required: true
+        type: string
+      - description: IO 地址
+        in: path
+        name: address
+        required: true
+        type: integer
+      - description: 要写入的逻辑位值、物理原始值或模拟值
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/httpapi.ioWriteBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 写入 IO 物理值
+      tags:
+      - io
+  /cards/{card}/io/{kind}/reads:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: IO 类型
+        enum:
+        - input-bit
+        - output-bit
+        - input-port
+        - output-port
+        - analog-input
+        - analog-output
+        in: path
+        name: kind
+        required: true
+        type: string
+      - description: 地址列表
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/httpapi.ioReadBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 通过请求体按地址批量读取 IO 物理值
+      tags:
+      - io
+  /cards/{card}/reset:
+    post:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 复位控制卡
+      tags:
+      - cards
+  /cards/{card}/soft-reset:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: 软复位选项，例如 timeout_ms
+        in: body
+        name: body
+        schema:
+          additionalProperties:
+            format: int64
+            type: integer
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 软复位控制卡
+      tags:
+      - cards
+  /data/export:
+    get:
+      produces:
+      - application/yaml
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 导出全部配置数据
+      tags:
+      - data
+  /data/import:
+    put:
+      consumes:
+      - application/yaml
+      parameters:
+      - description: 包含 axis_configs、bus_configs 和 io_aliases 的 YAML 文档
+        in: body
+        name: body
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 导入并替换全部配置数据
+      tags:
+      - data
+  /health:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 服务健康状态
+      tags:
+      - system
+  /io-variables:
+    get:
+      parameters:
+      - description: 控制卡编号；省略时列出所有卡
+        in: query
+        name: card_no
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 列出 IO 变量配置
+      tags:
+      - io-variables
+  /io-variables/{card}/{kind}/{address}:
+    delete:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: IO 类型
+        enum:
+        - input-bit
+        - output-bit
+        - input-port
+        - output-port
+        - analog-input
+        - analog-output
+        in: path
+        name: kind
+        required: true
+        type: string
+      - description: IO 地址
+        in: path
+        name: address
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 删除 IO 变量配置
+      tags:
+      - io-variables
+    get:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: IO 类型
+        enum:
+        - input-bit
+        - output-bit
+        - input-port
+        - output-port
+        - analog-input
+        - analog-output
+        in: path
+        name: kind
+        required: true
+        type: string
+      - description: IO 地址
+        in: path
+        name: address
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 读取 IO 变量配置
+      tags:
+      - io-variables
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: IO 类型
+        enum:
+        - input-bit
+        - output-bit
+        - input-port
+        - output-port
+        - analog-input
+        - analog-output
+        in: path
+        name: kind
+        required: true
+        type: string
+      - description: IO 地址
+        in: path
+        name: address
+        required: true
+        type: integer
+      - description: 变量名称与读写属性
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/httpapi.ioVariableMetadataBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 创建或更新 IO 变量配置
+      tags:
+      - io-variables
+  /io-variables/{card}/{kind}/{address}/value:
+    get:
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: IO 类型
+        enum:
+        - input-bit
+        - output-bit
+        - input-port
+        - output-port
+        - analog-input
+        - analog-output
+        in: path
+        name: kind
+        required: true
+        type: string
+      - description: IO 地址
+        in: path
+        name: address
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 读取 IO 变量值
+      tags:
+      - io-variables
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 控制卡编号
+        in: path
+        name: card
+        required: true
+        type: integer
+      - description: IO 类型
+        enum:
+        - output-bit
+        - output-port
+        in: path
+        name: kind
+        required: true
+        type: string
+      - description: IO 地址
+        in: path
+        name: address
+        required: true
+        type: integer
+      - description: 逻辑开关或端口原始值
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/httpapi.ioVariableWriteBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/httpapi.envelope'
+      summary: 写入 IO 变量逻辑值
+      tags:
+      - io-variables
+schemes:
+- http
+swagger: "2.0"
